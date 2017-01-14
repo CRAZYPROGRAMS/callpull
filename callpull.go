@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var errorTimeout = errors.New("call timeout")
+var ErrorTimeout = errors.New("call timeout")
 
 type callName struct {
 	lock   sync.Mutex
@@ -95,7 +95,7 @@ func (cp *CallPull) Listen(Name string, timeOutWait time.Duration) (Param []inte
 				return ci.Param, ci.Result, nil
 			}
 		case <-timeoutChan:
-			return nil, nil, errorTimeout
+			return nil, nil, ErrorTimeout
 		}
 	}
 }
@@ -119,6 +119,6 @@ func (cp *CallPull) Call(Name string, Param []interface{}, timeOutWait time.Dura
 		if len(ci.Result) > 0 {
 			return <-ci.Result, nil
 		}
-		return nil, errorTimeout
+		return nil, ErrorTimeout
 	}
 }
