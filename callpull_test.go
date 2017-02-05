@@ -31,7 +31,7 @@ func TestListenTimeout(t *testing.T) {
 func tCallTimeout(t *testing.T, tInterval time.Duration) {
 	pull := NewCallPull()
 	start := time.Now()
-	Result, err := pull.Call("Test", []interface{}{"Param1", "Param2"}, tInterval)
+	Result, err := pull.Call("Test", map[string]interface{}{"0": "Param1", "1": "Param2"}, tInterval)
 	if err != ErrorTimeout || Result != nil {
 		t.Error("Unknown error")
 	}
@@ -51,20 +51,20 @@ func TestCallTimeout(t *testing.T) {
 	tCallTimeout(t, time.Millisecond*400)
 	tCallTimeout(t, time.Millisecond*500)
 }
-func tPull(t *testing.T, tIntervalCall time.Duration, tIntervalWork time.Duration, Name string, Param []interface{}) (interface{}, bool, error) {
+func tPull(t *testing.T, tIntervalCall time.Duration, tIntervalWork time.Duration, Name string, Param map[string]interface{}) (interface{}, bool, error) {
 	var brake bool = false
 	done := make(chan bool)
 	pull := NewCallPull()
 	worker := func(Name string) {
-		process := func(Param []interface{}, Result chan interface{}) {
+		process := func(Param map[string]interface{}, Result chan interface{}) {
 			defer func() {
 				if r := recover(); r != nil {
 					brake = true
 				}
 				done <- true
 			}()
-			P1 := Param[0].(string)
-			P2 := Param[1].(string)
+			P1 := Param["0"].(string)
+			P2 := Param["1"].(string)
 			time.Sleep(tIntervalWork)
 			Result <- "result" + Name + P1 + P2
 		}

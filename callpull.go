@@ -18,7 +18,7 @@ type callName struct {
 
 type callItem struct {
 	Result chan interface{}
-	Param  []interface{}
+	Param  map[string]interface{}
 }
 
 func newCallName(Name string) *callName {
@@ -84,7 +84,7 @@ func (cp *CallPull) getCallName(Name string) *callName {
 }
 
 // Listen - Wait for the request to perform call
-func (cp *CallPull) Listen(Name string, timeOutWait time.Duration) (Param []interface{}, Result chan interface{}, err error) {
+func (cp *CallPull) Listen(Name string, timeOutWait time.Duration) (Param map[string]interface{}, Result chan interface{}, err error) {
 	update := cp.getCallName(Name).Update
 	timeoutChan := time.After(timeOutWait)
 	for {
@@ -101,7 +101,7 @@ func (cp *CallPull) Listen(Name string, timeOutWait time.Duration) (Param []inte
 }
 
 // Call - Execution of call
-func (cp *CallPull) Call(Name string, Param []interface{}, timeOutWait time.Duration) (interface{}, error) {
+func (cp *CallPull) Call(Name string, Param map[string]interface{}, timeOutWait time.Duration) (interface{}, error) {
 	cn := cp.getCallName(Name)
 	ci := &callItem{
 		Param:  Param,
